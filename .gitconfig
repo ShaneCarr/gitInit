@@ -1,0 +1,145 @@
+#tips
+
+    #List just aliases
+    #$ git config --get-regexp alias
+
+    #List all config parameters
+    #$ git config --list
+    
+    #history changes by user
+    #
+    #git log --author=Smith
+    #git log --author="username" --pretty=format:"%h - %an, %ar : %s"
+    
+   #history compare branches
+        #    to make sure to include all changes of k73ud in the resulting diff.
+
+        #git diff compares two endpoints (instead of a commit range). Since the OP want to see the changes introduced by k73ud, he/she needs to difference between the first parent commit of k73ud: k73ud^     
+        #(or          #k73ud^1 or k73ud~).
+
+        #That way, the diff results will include changes since k73ud parent (meaning including changes from k73ud itself), instead of changes introduced since k73ud (up to dj374).
+
+        #Also you can try:
+
+        #git diff oldCommit..newCommit
+        #git diff k73ud..dj374 
+    #
+    #
+    #compare git diff commit1^..commit2
+    #
+    #
+    #
+
+[user]
+    name = Shane Carr
+    email = shanepcarr@gmail.com
+[push]
+    default = matching
+[alias]
+    #MISC
+    plog = log --pretty=tformat:'%h\t%cr\t%cn\t\t%s'
+    plogcolor = log --pretty=tformat:'%C(bold blue)%h%Creset\t%Cblue%cr%Creset\t%cn\t\t%Cgreen%s%Creset'
+    branch-name = "!git rev-parse --abbrev-ref HEAD"
+
+    publish = "!git push -u origin $(git branch-name) --follow-tags"
+    p = "!git publish"
+    sync-dev = "!git checkout master && git pull && git checkout rc && git pull && git checkout dev && git pull && git merge master && git merge rc && git publish"
+    unpublish = "!git push origin :$(git branch-name)"
+    delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
+    # bc, or "branch commit" - like git commit -m, but prefixes commit message with the branch name in brackets. Reads commit message from stdin, and limited to a single line. Aborts if nothing is added to the message
+    bc = "!f() { bname=\"[$(git symbolic-ref --short HEAD)] \"; read -i \"$bname\" -e && [[ ${#bname} -lt ${#REPLY} ]] && git commit -m \"$REPLY\" || echo aborted; }; f; unset f bname"
+
+    prune-tags = "fetch --prune origin 'refs/tags/*:refs/tags/*' '+refs/heads/*:refs/remotes/origin/*'"
+
+    dev = "checkout dev"
+    master = "checkout master"
+    rc = "checkout rc"
+
+    staging = "!git dev && git pull && git rc && git merge dev --no-ff && git publish"
+
+    ## basic ##
+    s = status
+    st = status -s
+    c = commit
+    co = checkout
+    b = branch
+    r = reset
+    cp = cherry-pick
+    gr = grep -Ii
+
+    # Commits
+    cm = commit -m
+    cma = commit -a -m
+    ca = commit --amend
+    amend = commit --amend
+    caa = commit -a --amend -C HEAD
+
+    # Resets
+    r1 = reset HEAD^
+    r2 = reset HEAD^^
+    rh = reset --hard
+    rh1 = reset HEAD^ --hard
+    rh2 = reset HEAD^^ --hard
+
+    ## TAGS ##
+    prunetags = fetch --prune origin +refs/tags/*:refs/tags/*
+
+    ## LOG ##
+    # Git log em uma linha
+    le = log --oneline --decorate
+    # Lista dos ultimos commits, com decoração e cores
+    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+    # Lista dos ultimos commits com arquivos modificados
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    # Lista de commits Sem cores
+    lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
+    # Lista de commits com datas
+    lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+    # Lista os commits com datas relativas
+    ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+
+    # Mostra lista de commits como uma árvore
+    mtree = log --graph --abbrev-commit --decorate --all --format=format:'%C(bold blue)%h%C(reset) - %C(cyan)%aD%C(reset) - %an %C(blue)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(green)%s%C(reset)'
+
+    # Mostra alteraçõs em um arquivo específico por commit
+    filelog = log -u
+    fl = log -u
+
+    # 
+    oops = reset --soft HEAD^
+
+    # 10 topcommitters
+    top10 = "!_() { \
+                git shortlog -sn --no-merges | head -n${1:-10}; \
+            }; _"
+
+    remember = !git plogcolor ORIG_HEAD.. --no-merges
+
+    ego = "!_() { \
+                git plogcolor --author=\"`git config user.name`\"; \
+            }; _"
+    
+    chs = "!f(){ git checkout \"$1\" && git status; };f"
+    
+    resetMaster = !git fetch origin && git reset --hard origin/master
+
+[color "branch"]
+    current = red reverse
+    local = blue
+    remote = green
+
+[color "diff"]
+    meta = yellow
+    frag = magenta
+    old = red bold
+    new = green
+    plain = white
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+    
+    
+    
