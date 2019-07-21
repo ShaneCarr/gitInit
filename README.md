@@ -1,0 +1,2 @@
+# gitInit
+helpful git init
